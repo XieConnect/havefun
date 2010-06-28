@@ -1,0 +1,24 @@
+#!/usr/bin/ruby
+# show file size in graphic mode
+
+def get_bar(percent)
+	percent *= 30;
+	result = ''
+	1.upto(percent.to_i) {result << '$'}
+
+	return result
+end
+
+base_path = (ARGV[0]) ? ARGV[0] : '/home/kktest/project/dooxoowww'
+scale_base = (ARGV[1]) ? ARGV[1].to_i : 1000  # 1000 K
+
+Dir.entries(base_path).sort.each do |entry|
+	# ignore dot files . .. .git
+	next if entry.match(/\..*/)
+
+	#output = exec("du -s " << base_path << '/' << entry)
+	output = `du -s #{base_path}/#{entry}`.split[0]
+	# output unit: 1k
+	#puts entry << '  ' << get_bar(output.to_f / 1000)
+	printf("%15s %5d %s\n", entry, output, get_bar(output.to_f / scale_base))
+end
